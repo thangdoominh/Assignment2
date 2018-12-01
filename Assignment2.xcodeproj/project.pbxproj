@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6D3B145A21AE5F0D0030EFA3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B145921AE5F0D0030EFA3 /* main.cpp */; };
+		6D3B146421AE5F450030EFA3 /* TreeSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B146221AE5F450030EFA3 /* TreeSet.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,10 @@
 /* Begin PBXFileReference section */
 		6D3B145621AE5F0D0030EFA3 /* Assignment2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Assignment2; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D3B145921AE5F0D0030EFA3 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		6D3B146021AE5F450030EFA3 /* input.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = input.txt; sourceTree = "<group>"; };
+		6D3B146121AE5F450030EFA3 /* AVLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVLNode.h; sourceTree = "<group>"; };
+		6D3B146221AE5F450030EFA3 /* TreeSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TreeSet.cpp; sourceTree = "<group>"; };
+		6D3B146321AE5F450030EFA3 /* TreeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeSet.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +62,11 @@
 		6D3B145821AE5F0D0030EFA3 /* Assignment2 */ = {
 			isa = PBXGroup;
 			children = (
+				6D3B146021AE5F450030EFA3 /* input.txt */,
 				6D3B145921AE5F0D0030EFA3 /* main.cpp */,
+				6D3B146121AE5F450030EFA3 /* AVLNode.h */,
+				6D3B146221AE5F450030EFA3 /* TreeSet.cpp */,
+				6D3B146321AE5F450030EFA3 /* TreeSet.h */,
 			);
 			path = Assignment2;
 			sourceTree = "<group>";
@@ -118,6 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D3B146421AE5F450030EFA3 /* TreeSet.cpp in Sources */,
 				6D3B145A21AE5F0D0030EFA3 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
