@@ -118,7 +118,7 @@ AVLNode *insRightBal(AVLNode *root,bool *taller)
             } // end switch leftTree->balance
             leftTree->balance = EH;
             
-            rightTree = _rotateRight(rightTree);
+            root->right = _rotateRight(root->right);
             root = _rotateLeft(root);
             *taller = false;
             
@@ -134,8 +134,6 @@ AVLNode *insRightBal(AVLNode *root,bool *taller)
             break;
         default:
             break;
-            
-        return root;
     } //switch rightTree->balance
     
     return root;
