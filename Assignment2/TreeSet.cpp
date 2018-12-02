@@ -209,6 +209,81 @@ AVLNode *_insert(AVLNode *root, AVLNode *newPtr, bool *taller, bool *added)
 }
 
 
+//delete left balance
+AVLNode *_dltLeftBal (AVLNode *root, bool &shorter)
+{
+    return root;
+}
+
+//delete right balance
+AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
+{
+    return root;
+}
+
+AVLNode *_delete(AVLNode *root, int dltkey,bool &shorter,bool &success)
+{
+    AVLNode *dltPtr;
+    AVLNode *exchPtr;
+    AVLNode *newRoot;
+    
+    if(!root)
+    {
+        shorter = false;
+        success = false;
+        return NULL;
+    }
+    
+    if(dltkey < root->key)
+    {
+        root->left = _delete(root->left, dltkey, shorter, success);
+        if(shorter)
+            root = _dltLeftBal (root, shorter);
+            
+    }   //if less
+    else if(dltkey > root->key)
+    {
+        root->right = _delete(root->right, dltkey, shorter, success);
+        if(shorter)
+            root = _dltRightBal(root, shorter);
+        
+    }   //if greater
+    else
+    // Found equal node
+    {
+        dltPtr = root;
+        
+        if(!root->right)    // only left Subtree
+        {
+            newRoot = root->left;
+            shorter = false;
+            success = false;
+            free(dltPtr);
+            return newRoot;
+        }
+        else if(!root->left) //only right Subtree
+        {
+            newRoot = root->right;
+            shorter = false;
+            success = false;
+            free(dltPtr);
+            return newRoot;
+        }
+        else
+            // Delete Node has two Subtree
+        {
+            exchPtr = root->left;
+            while (exchPtr->right)
+                exchPtr = exchPtr->right;
+            root->key = exchPtr->key;
+            root->left = _delete(root->left, exchPtr->key, shorter, success);
+            if(shorter)
+                root = _dltRightBal(root, shorter);
+        }// else
+    }   //equal node
+    return root;
+}   //end _delete
+
 void TreeSet::clearRec(AVLNode* root) {
 	if (root != NULL) {
 		clearRec(root->left);
@@ -277,8 +352,19 @@ int TreeSet::lower(int val) {
 }
 
 int TreeSet::remove(int val) {
-	// TODO
-    return -1; //test
+    AVLNode *newRoot;
+    bool *shorter;
+    bool *success;
+    
+    newRoot = _delete(root, val, shorter, success);
+    if(success)
+    {
+        root = newRoot;
+        count --;
+        return true;
+    }
+    else
+        return false;
 }
 
 
