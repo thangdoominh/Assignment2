@@ -459,10 +459,11 @@ int TreeSet::add(int val) {
 
 bool TreeSet::contains(int val)
 {
-    if(root == NULL)
-        return false;
+    
     AVLNode *seach = root;
     seach = _searchKey(seach, val);
+    if(seach == NULL)
+        return false;
     if(seach->key == val)
         return true;
     return false;
