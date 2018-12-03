@@ -416,6 +416,18 @@ AVLNode *_delete(AVLNode *root, int dltkey,bool &shorter,bool &success)
     return root;
 }   //end _delete
 
+//contains
+AVLNode *_searchKey(AVLNode *root, int val)
+{
+    if(!root)
+        return root;
+    if(val > root->key)
+        root->right = _searchKey(root->right, val);
+    else if(val < root->key)
+        root->left = _searchKey(root->left, val);
+    return root;
+}
+
 void TreeSet::clearRec(AVLNode* root) {
 	if (root != NULL) {
 		clearRec(root->left);
@@ -445,13 +457,22 @@ int TreeSet::add(int val) {
     return true;
 }
 
-bool TreeSet::contains(int val) {
-	// TODO
-    return false; //test
+bool TreeSet::contains(int val)
+{
+    if(root == NULL)
+        return false;
+    AVLNode *seach = root;
+    seach = _searchKey(seach, val);
+    if(seach->key == val)
+        return true;
+    return false;
 }
+
+
 
 void TreeSet::copy(const TreeSet& set) {
 	// TODO
+    _copy(root, set.root);
     
 }
 
