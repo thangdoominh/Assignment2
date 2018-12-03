@@ -46,7 +46,7 @@ int main() {
 			case 'd': // copy the set to a new one 
 				temp.copy(set);
 				cout << temp << endl;
-				temp.clear();
+                temp.clear();
 				cout << temp.size() << endl;
 				break;
 			case 'f': // return the smallest element in the set

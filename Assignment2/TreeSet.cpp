@@ -480,7 +480,6 @@ void TreeSet::_copy(AVLNode *root, AVLNode *set)
 }
 
 void TreeSet::copy(const TreeSet& set) {
-	// TODO
     _copy(root, set.root);
 }
 
