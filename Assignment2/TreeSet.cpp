@@ -422,9 +422,9 @@ AVLNode *_searchKey(AVLNode *root, int val)
     if(!root)
         return root;
     if(val > root->key)
-        root->right = _searchKey(root->right, val);
+        root = _searchKey(root->right, val);
     else if(val < root->key)
-        root->left = _searchKey(root->left, val);
+        root = _searchKey(root->left, val);
     return root;
 }
 
@@ -468,12 +468,19 @@ bool TreeSet::contains(int val)
     return false;
 }
 
-
+void TreeSet::_copy(AVLNode *root, AVLNode *set)
+{
+    if(set)
+    {
+        _copy(root, set->left);
+        this->add(set->key);
+        _copy(root, set->right);
+    }
+}
 
 void TreeSet::copy(const TreeSet& set) {
 	// TODO
     _copy(root, set.root);
-    
 }
 
 int TreeSet::first() {	

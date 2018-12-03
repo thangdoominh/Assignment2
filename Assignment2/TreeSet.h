@@ -27,6 +27,8 @@ public:
 	int remove(int val);
 	TreeSet* subSet(int fromVal, int toVal);
 	int size();
+    void _copy(AVLNode *root, AVLNode *set);
+
     
     //------test in -------
     //function print tree
