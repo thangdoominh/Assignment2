@@ -218,6 +218,70 @@ AVLNode *_dltLeftBal (AVLNode *root, bool &shorter)
 //delete right balance
 AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
 {
+    AVLNode *rightTree;
+    AVLNode *leftTree;
+    
+    switch (root->balance) {
+        case LH:    //deleted left -- now balanced
+            root->balance = EH;
+            break;
+        case EH:    //now right high
+            root->balance = RH;
+            shorter = false;
+            break;
+        case RH:   // Right higt -> rotate left
+            rightTree = root->right;
+            if (rightTree->balance == LH)
+            {
+                leftTree = rightTree->left;
+                switch (leftTree->balance) {
+                    case LH:
+                        root->balance = EH;
+                        rightTree->balance = RH;
+                        break;
+                    case EH:
+                        root->balance = EH;
+                        rightTree->balance = EH;
+                        break;
+                    case RH:
+                        root->balance = LH;
+                        rightTree->balance = EH;
+                        break;
+                    default:
+                        break;
+                }   // end switch rightTree->balance
+                rightTree->balance = EH;
+                
+                //  rotate Right then Left
+                root->right = _rotateRight(rightTree);
+                root = _rotateLeft(root);
+            }   //end if (rightTree->balance == LH)
+            else
+                //sigle Rotation Only
+            {
+                switch (rightTree->balance) {
+                    case LH:
+                    case RH:
+                        root->balance = EH;
+                        rightTree->balance = EH;
+                        
+                        break;
+                    case EH:
+                        root->balance = RH;
+                        rightTree->balance = LH;
+                        shorter = false;
+                        break;
+                        
+                    default:
+                        break;
+                }   //end switch (rightTree->balance)
+                
+                root = _rotateLeft(root);
+            }   // end else
+            break;
+        default:
+            break;
+    }   //end switch root->balance
     return root;
 }
 
@@ -353,8 +417,8 @@ int TreeSet::lower(int val) {
 
 int TreeSet::remove(int val) {
     AVLNode *newRoot;
-    bool *shorter;
-    bool *success;
+    bool shorter;
+    bool success;
     
     newRoot = _delete(root, val, shorter, success);
     if(success)
