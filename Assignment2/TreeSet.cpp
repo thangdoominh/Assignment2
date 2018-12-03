@@ -24,7 +24,7 @@ AVLNode *_rotateRight (AVLNode *root)
 }
 
 //Rotate Left
-AVLNode *_rotateLeft(AVLNode * root)
+AVLNode *_rotateLeft(AVLNode *root)
 {
     AVLNode *temp = root->right;
     root->right = temp->left;
@@ -61,7 +61,7 @@ AVLNode *insLeftBal(AVLNode *root,bool *taller)
                     break;
                 case EH:
                     root->balance = EH;
-                    leftTree->balance = EH; // LH
+                    leftTree->balance = EH; // LH or EH
                     break;
                 case RH:
                     root->balance = EH;
@@ -73,7 +73,7 @@ AVLNode *insLeftBal(AVLNode *root,bool *taller)
             rightTree->balance = EH;
             
             //rotate left
-            root->left = _rotateLeft(root->left);
+            root->left = _rotateLeft(leftTree);
             //rotate right
             root = _rotateRight(root);
             
@@ -106,7 +106,7 @@ AVLNode *insRightBal(AVLNode *root,bool *taller)
                     break;
                 case EH:
                     root->balance = EH;
-                    rightTree->balance = EH;
+                    rightTree->balance = EH;    // EH or RH
                     break;
                 case RH:
                     root->balance = LH;
@@ -118,7 +118,7 @@ AVLNode *insRightBal(AVLNode *root,bool *taller)
             } // end switch leftTree->balance
             leftTree->balance = EH;
             
-            root->right = _rotateRight(root->right);
+            root->right = _rotateRight(rightTree);
             root = _rotateLeft(root);
             *taller = false;
             
@@ -154,6 +154,7 @@ AVLNode *_insert(AVLNode *root, AVLNode *newPtr, bool *taller, bool *added)
     if(newPtr->key == root->key)
     {
         *added = false;
+        *taller = false;
         return root;
     }
     
@@ -166,7 +167,6 @@ AVLNode *_insert(AVLNode *root, AVLNode *newPtr, bool *taller, bool *added)
             //Left Subtree is taller
             switch (root->balance) {
                 case LH:    //Was left high--rotate
-                    root->balance = RH;
                     root = insLeftBal(root, taller);
                     break;
                 case EH:    // Was balanced--now LH
@@ -193,11 +193,12 @@ AVLNode *_insert(AVLNode *root, AVLNode *newPtr, bool *taller, bool *added)
                         root->balance = EH;
                         *taller = false;
                         break;
+                        
                     case EH:    // Was balanced--now RH
                         root->balance = RH;
                         break;
+                        
                     case RH:    // Was right high--rotate
-                        root->balance = LH;
                         root = insRightBal(root, taller);
                         break;
                     default:
@@ -212,11 +213,76 @@ AVLNode *_insert(AVLNode *root, AVLNode *newPtr, bool *taller, bool *added)
 //delete left balance
 AVLNode *_dltLeftBal (AVLNode *root, bool &shorter)
 {
+    AVLNode *leftTree;
+    AVLNode *rightTree;
+    
+    switch (root->balance)
+    {
+        case EH:    // now Left high
+            root->balance = LH;
+            shorter = false;
+            break;
+            
+        case RH:    //deleted Right -- now balanced
+            root->balance = EH;
+            break;
+            
+        case LH:    //Left high -> rotate right
+            leftTree = root->left;
+            if(leftTree->balance == RH)
+            {
+                rightTree = leftTree->right;
+                switch (rightTree->balance)
+                {
+                    case LH:
+                        root->balance = RH;
+                        leftTree->balance = EH;
+                        break;
+                    case EH:
+                        root->balance = RH; //EH or RH
+                        leftTree->balance = EH;
+                        break;
+                    case RH:
+                        root->balance = EH;
+                        leftTree->balance = LH;
+                        break;
+                    default:
+                        break;
+                }   //end switch(rightTree->balance)
+                rightTree->balance = EH;
+                
+                //Rotate Left then Right
+                root->left = _rotateLeft(leftTree);
+                root = _rotateRight(root);
+            }   //end if(leftTree->balance == RH)
+            else
+                //sigle Rotation Only
+            {
+                switch (leftTree->balance) {
+                    case LH:
+                    case RH:
+                        root->balance = EH;
+                        leftTree->balance = EH;
+                        break;
+                    case EH:
+                        root->balance = LH;
+                        leftTree->balance = RH;
+                        shorter = false;
+                        break;
+                    default:
+                        break;
+                }   //end switch(leftTree->balance)
+                root = _rotateRight(root);
+            }   //end else
+            break;
+               default:
+            break;
+    } //end switch(root->balance)
     return root;
 }
 
 //delete right balance
-AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
+AVLNode *_dltRightBal (AVLNode *root, bool &shorter)
 {
     AVLNode *rightTree;
     AVLNode *leftTree;
@@ -225,22 +291,25 @@ AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
         case LH:    //deleted left -- now balanced
             root->balance = EH;
             break;
+            
         case EH:    //now right high
             root->balance = RH;
             shorter = false;
             break;
-        case RH:   // Right higt -> rotate left
+            
+        case RH:   // Right high -> rotate left
             rightTree = root->right;
             if (rightTree->balance == LH)
             {
                 leftTree = rightTree->left;
-                switch (leftTree->balance) {
+                switch (leftTree->balance)
+                {
                     case LH:
                         root->balance = EH;
                         rightTree->balance = RH;
                         break;
                     case EH:
-                        root->balance = EH;
+                        root->balance = LH; // LH or EH
                         rightTree->balance = EH;
                         break;
                     case RH:
@@ -250,7 +319,7 @@ AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
                     default:
                         break;
                 }   // end switch rightTree->balance
-                rightTree->balance = EH;
+                leftTree->balance = EH;
                 
                 //  rotate Right then Left
                 root->right = _rotateRight(rightTree);
@@ -264,7 +333,6 @@ AVLNode *_dltRightBal (AVLNode *root,bool &shorter)
                     case RH:
                         root->balance = EH;
                         rightTree->balance = EH;
-                        
                         break;
                     case EH:
                         root->balance = RH;
@@ -302,14 +370,14 @@ AVLNode *_delete(AVLNode *root, int dltkey,bool &shorter,bool &success)
     {
         root->left = _delete(root->left, dltkey, shorter, success);
         if(shorter)
-            root = _dltLeftBal (root, shorter);
+            root = _dltRightBal(root, shorter);
             
     }   //if less
     else if(dltkey > root->key)
     {
         root->right = _delete(root->right, dltkey, shorter, success);
         if(shorter)
-            root = _dltRightBal(root, shorter);
+            root = _dltLeftBal(root, shorter);
         
     }   //if greater
     else
@@ -320,16 +388,16 @@ AVLNode *_delete(AVLNode *root, int dltkey,bool &shorter,bool &success)
         if(!root->right)    // only left Subtree
         {
             newRoot = root->left;
-            shorter = false;
-            success = false;
+            success = true;
+            shorter = true;
             free(dltPtr);
             return newRoot;
         }
         else if(!root->left) //only right Subtree
         {
             newRoot = root->right;
-            shorter = false;
-            success = false;
+            success = true;
+            shorter = true;
             free(dltPtr);
             return newRoot;
         }
@@ -442,7 +510,3 @@ int TreeSet::size() {
     print2DUtil(root, 10); //test in
     return count; //test
 }
-
-
-
-
