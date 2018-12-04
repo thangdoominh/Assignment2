@@ -428,6 +428,58 @@ AVLNode *_searchKey(AVLNode *root, int val)
     return root;
 }
 
+// for Higher
+int _findHigher(AVLNode *root, int val)
+{
+    if(root != NULL)
+    {
+        if(root->key > val)
+        {
+            int k =  _findHigher(root->left, val);
+            if(k == -1)
+                return root->key;
+            else
+                return k;
+        }
+        else if(root->key <= val)
+        {
+            return _findHigher(root->right, val);
+        }
+    }
+    return -1;
+}
+
+//for Lower
+int _findLower(AVLNode *node, int val)
+{
+    if(node != NULL)
+    {
+        if(node->key >= val)
+        {
+            return _findLower(node->left, val);
+        }
+        else if(node->key < val)
+        {
+            int k = _findLower(node->right, val);
+            if(k == -1)
+                return node->key;
+            else
+                return k;
+        }
+    }
+    return -1;
+}
+
+void TreeSet::_copy(AVLNode *root, AVLNode *set)
+{
+    if(set)
+    {
+        _copy(root, set->left);
+        this->add(set->key);
+        _copy(root, set->right);
+    }
+}
+
 void TreeSet::clearRec(AVLNode* root) {
 	if (root != NULL) {
 		clearRec(root->left);
@@ -469,16 +521,6 @@ bool TreeSet::contains(int val)
     return false;
 }
 
-void TreeSet::_copy(AVLNode *root, AVLNode *set)
-{
-    if(set)
-    {
-        _copy(root, set->left);
-        this->add(set->key);
-        _copy(root, set->right);
-    }
-}
-
 void TreeSet::copy(const TreeSet& set) {
     _copy(root, set.root);
 }
@@ -504,44 +546,7 @@ int TreeSet::last() {
     }
     return temp->key;
 }
-int _findHigher(AVLNode *root, int val)
-{
-    if(root != NULL)
-    {
-        if(root->key > val)
-        {
-            int k =  _findHigher(root->left, val);
-            if(k == -1)
-                return root->key;
-            else
-                return k;
-        }
-        else if(root->key <= val)
-        {
-            return _findHigher(root->right, val);
-        }
-    }
-    return -1;
-}
-int _findLower(AVLNode *node, int val)
-{
-    if(node != NULL)
-    {
-        if(node->key >= val)
-        {
-            return _findLower(node->left, val);
-        }
-        else if(node->key < val)
-        {
-            int k = _findLower(node->right, val);
-            if(k == -1)
-                return node->key;
-            else
-                return k;
-        }
-    }
-    return -1;
-}
+
 int TreeSet::higher(int val) {
     AVLNode *temp = root;
     return _findHigher(temp, val);
@@ -568,10 +573,21 @@ int TreeSet::remove(int val) {
         return false;
 }
 
+void _subset(TreeSet *sub,AVLNode *root, int fromVal, int toVal)
+{
+    if(root)
+    {
+        _subset(sub,root->left, fromVal, toVal);
+        if(root->key >= fromVal && root->key < toVal)
+            sub->add(root->key);
+        _subset(sub, root->right, fromVal, toVal);
+    }
+}
 
 TreeSet* TreeSet::subSet(int fromVal, int toVal) {
-	// TODO
-    return this; // test
+    TreeSet *subSet = new TreeSet();
+    _subset(subSet, root, fromVal, toVal);
+    return subSet;
 }
 
 int TreeSet::size() {
