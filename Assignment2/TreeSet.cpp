@@ -487,22 +487,36 @@ int TreeSet::first() {
 	if (root == NULL) {
 		throw "NoSuchElementException";
 	}
-
-	// TODO
-    return -1; // test
+    AVLNode *temp = root;
+    while (temp->left) {
+        temp = temp->left;
+    }
+    return temp->key;
 }
 
 int TreeSet::last() {
 	if (root == NULL) {
 		throw "NoSuchElementException";
 	}
-
-	// TODO
-    return -1;  //test
+    AVLNode *temp = root;
+    while (temp->right) {
+        temp = temp->right;
+    }
+    return temp->key;
 }
-
+void _find(AVLNode *root, int val)
+{
+    if(root)
+    {
+        if(root->key < val)
+        {
+            _find(root->left, val);
+            _find(root->right, val);
+        }
+    }
+}
 int TreeSet::higher(int val) {
-	// TODO
+	
     return -1; //test
 }
 
