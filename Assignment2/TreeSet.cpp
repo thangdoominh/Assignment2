@@ -504,31 +504,58 @@ int TreeSet::last() {
     }
     return temp->key;
 }
-void _find(AVLNode *root, int val)
+int _findHigher(AVLNode *root, int val)
 {
-    if(root)
+    if(root != NULL)
     {
-        if(root->key < val)
+        if(root->key > val)
         {
-            _find(root->left, val);
-            _find(root->right, val);
+            int k =  _findHigher(root->left, val);
+            if(k == -1)
+                return root->key;
+            else
+                return k;
+        }
+        else if(root->key <= val)
+        {
+            return _findHigher(root->right, val);
         }
     }
+    return -1;
+}
+int _findLower(AVLNode *node, int val)
+{
+    if(node != NULL)
+    {
+        if(node->key >= val)
+        {
+            return _findLower(node->left, val);
+        }
+        else if(node->key < val)
+        {
+            int k = _findLower(node->right, val);
+            if(k == -1)
+                return node->key;
+            else
+                return k;
+        }
+    }
+    return -1;
 }
 int TreeSet::higher(int val) {
-	
-    return -1; //test
+    AVLNode *temp = root;
+    return _findHigher(temp, val);
 }
 
 int TreeSet::lower(int val) {
-	// TODO
-    return -1;  //test
+    AVLNode *temp = root;
+    return _findLower(temp, val);  //test
 }
 
 int TreeSet::remove(int val) {
     AVLNode *newRoot;
     bool shorter;
-    bool success;
+    bool success = false;
     
     newRoot = _delete(root, val, shorter, success);
     if(success)
