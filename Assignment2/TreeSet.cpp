@@ -239,7 +239,7 @@ AVLNode *_dltLeftBal (AVLNode *root, bool &shorter)
                         leftTree->balance = EH;
                         break;
                     case EH:
-                        root->balance = RH; //EH or RH
+                        root->balance = EH; //EH or RH
                         leftTree->balance = EH;
                         break;
                     case RH:
@@ -309,7 +309,7 @@ AVLNode *_dltRightBal (AVLNode *root, bool &shorter)
                         rightTree->balance = RH;
                         break;
                     case EH:
-                        root->balance = LH; // LH or EH
+                        root->balance = EH; // LH or EH
                         rightTree->balance = EH;
                         break;
                     case RH:
@@ -450,19 +450,19 @@ int _findHigher(AVLNode *root, int val)
 }
 
 //for Lower
-int _findLower(AVLNode *node, int val)
+int _findLower(AVLNode *root, int val)
 {
-    if(node != NULL)
+    if(root != NULL)
     {
-        if(node->key >= val)
+        if(root->key >= val)
         {
-            return _findLower(node->left, val);
+            return _findLower(root->left, val);
         }
-        else if(node->key < val)
+        else if(root->key < val)
         {
-            int k = _findLower(node->right, val);
+            int k = _findLower(root->right, val);
             if(k == -1)
-                return node->key;
+                return root->key;
             else
                 return k;
         }
@@ -503,7 +503,7 @@ int TreeSet::add(int val) {
     
     root = _insert(root,newPtr, &forTaller, &added);
     
-    if(added == false) return false;
+    if(added == false) return false;    // -> da co gia tri val trong Tree -> return false
     
     count++;
     return true;
@@ -512,7 +512,7 @@ int TreeSet::add(int val) {
 bool TreeSet::contains(int val)
 {
     
-    AVLNode *seach = root;
+    AVLNode *seach = root;  // create a temp root
     seach = _searchKey(seach, val);
     if(seach == NULL)
         return false;
@@ -554,7 +554,7 @@ int TreeSet::higher(int val) {
 
 int TreeSet::lower(int val) {
     AVLNode *temp = root;
-    return _findLower(temp, val);  //test
+    return _findLower(temp, val); 
 }
 
 int TreeSet::remove(int val) {
@@ -581,6 +581,8 @@ void _subset(TreeSet *sub,AVLNode *root, int fromVal, int toVal)
         if(root->key >= fromVal && root->key < toVal)
             sub->add(root->key);
         _subset(sub, root->right, fromVal, toVal);
+        if(root->key > toVal)
+            return;
     }
 }
 
@@ -592,6 +594,6 @@ TreeSet* TreeSet::subSet(int fromVal, int toVal) {
 
 int TreeSet::size() {
 	// TODO
-    print2DUtil(root, 10); //test in
+//    print2DUtil(root, 10); //test in
     return count; //test
 }
